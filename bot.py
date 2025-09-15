@@ -27,18 +27,18 @@ async def send_message(application, chat_id: int, text: str):
     try:
         await application.bot.send_message(chat_id=chat_id, text=text, parse_mode="Markdown")
     except Exception as e:
-        logger.exception(f"Error enviando mensaje a {chat_id}")
+        logger.exception(f"Error enviando mensaje a {chat_id}: {e}")
 
 # ------------------ Handlers ------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Hola! Soy HoneyBot. Para registrarte usa /register <codigo>\n"
-        "Ejemplo: /register mi-codigo-secreto"
+        f"Ejemplo: /register {REGISTER_CODE}"
     )
 
 async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
-    if len(args) == 0:
+    if not args:
         await update.message.reply_text("Debes enviar el código secreto. /register <codigo> [nombre]")
         return
 
@@ -76,10 +76,10 @@ async def send_test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_ids = await get_all_chat_ids()
     message = "Mensaje de prueba manual. Si lo recibes, el bot está funcionando."
     for cid in chat_ids:
-        await context.application.bot.send_message(chat_id=cid, text=message)
+        await send_message(context.application, cid, message)
     await update.message.reply_text("Envíos de prueba realizados.")
 
-# ------------------ Inicialización del Bot ------------------
+# ------------------ Inicialización ------------------
 async def init_bot():
     await init_db()
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -103,7 +103,11 @@ if __name__ == "__main__":
 
     async def main():
         app = await init_bot()
-        print("Bot iniciado, entrando en polling...")
-        await app.run_polling()  # Inicia el bot y el scheduler juntos
+        logger.info("Bot iniciado, entrando en polling...")
+        # ✅ run_polling no dentro de asyncio.run() directamente
+        await app.initialize()  # Inicializa async sin crear nuevo loop
+        await app.start()
+        await app.updater.start_polling()  # compatible con PTB 22
+        await app.updater.idle()
 
     asyncio.run(main())

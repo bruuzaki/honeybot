@@ -1,8 +1,7 @@
 import aiosqlite
-import asyncio
 import os
 
-DB_PATH = os.path.join(os.getcwd(), "data/database.db")
+DB_PATH = os.path.join("/app/data", "database.db")
 
 async def init_db():
     async with aiosqlite.connect(DB_PATH) as db:
@@ -17,8 +16,10 @@ async def init_db():
 
 async def add_user(chat_id: int, name: str):
     async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute("INSERT OR IGNORE INTO users (chat_id, name, registered_at) VALUES (?, ?, datetime('now'))",
-                         (chat_id, name))
+        await db.execute(
+            "INSERT OR IGNORE INTO users (chat_id, name, registered_at) VALUES (?, ?, datetime('now'))",
+            (chat_id, name)
+        )
         await db.commit()
 
 async def remove_user(chat_id: int):
@@ -29,8 +30,7 @@ async def remove_user(chat_id: int):
 async def list_users():
     async with aiosqlite.connect(DB_PATH) as db:
         cur = await db.execute("SELECT chat_id, name FROM users")
-        rows = await cur.fetchall()
-        return rows
+        return await cur.fetchall()
 
 async def get_all_chat_ids():
     async with aiosqlite.connect(DB_PATH) as db:
