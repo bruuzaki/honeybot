@@ -104,10 +104,6 @@ if __name__ == "__main__":
     async def main():
         app = await init_bot()
         logger.info("Bot iniciado, entrando en polling...")
-        # ✅ run_polling no dentro de asyncio.run() directamente
-        await app.initialize()  # Inicializa async sin crear nuevo loop
-        await app.start()
-        await app.updater.start_polling()  # compatible con PTB 22
-        await app.updater.idle()
+        await app.run_polling()  # ✅ Mantiene el bot corriendo hasta detenerlo manualmente
 
     asyncio.run(main())
