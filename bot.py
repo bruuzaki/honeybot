@@ -80,31 +80,25 @@ async def send_test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Envíos de prueba realizados.")
 
 # ------------------ Main ------------------
-async def main():
-    # Inicializar DB
+async def init_bot():
     await init_db()
-
-    # Crear aplicación del bot
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Registrar handlers
+    # Handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("register", register))
     app.add_handler(CommandHandler("unregister", unregister))
     app.add_handler(CommandHandler("status", status))
     app.add_handler(CommandHandler("send_test", send_test))
 
-    # ------------------ Scheduler ------------------
+    # Scheduler
     scheduler = AsyncIOScheduler(timezone=TZ)
-    # schedule_jobs recibe lambda async
     schedule_jobs(scheduler, lambda cid, msg: send_message(app, cid, msg), tz_name=TZ, hour=SEND_HOUR)
-    # No llamamos scheduler.start() aquí; PTB correrá todo en el mismo loop
 
-    # ------------------ Start polling ------------------
-    print("Bot iniciado, entrando en polling...")
-    await app.run_polling()  # maneja loop y scheduler async correctamente
+    return app
 
 # ------------------ Entry point ------------------
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(main())
+    app = asyncio.run(init_bot())
+    app.run_polling()  # solo esto
