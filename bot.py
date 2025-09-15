@@ -1,5 +1,7 @@
 import os
 import logging
+import asyncio
+import nest_asyncio
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
@@ -99,11 +101,11 @@ async def init_bot():
 
 # ------------------ Entry Point ------------------
 if __name__ == "__main__":
-    import asyncio
+    nest_asyncio.apply()  # Permite usar run_polling dentro de loop ya existente
 
     async def main():
         app = await init_bot()
         logger.info("Bot iniciado, entrando en polling...")
-        await app.run_polling()  # ✅ Mantiene el bot corriendo hasta detenerlo manualmente
+        await app.run_polling()  # Mantiene el bot corriendo indefinidamente
 
     asyncio.run(main())

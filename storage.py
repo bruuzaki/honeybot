@@ -1,8 +1,13 @@
-import aiosqlite
 import os
+import aiosqlite
 
-DB_PATH = os.path.join("/app/data", "database.db")
+# ------------------ Carpeta y DB ------------------
+DATA_DIR = os.path.join(os.getcwd(), "data")
+os.makedirs(DATA_DIR, exist_ok=True)  # asegura que exista la carpeta
 
+DB_PATH = os.path.join(DATA_DIR, "database.db")
+
+# ------------------ Funciones Async ------------------
 async def init_db():
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("""
@@ -30,7 +35,8 @@ async def remove_user(chat_id: int):
 async def list_users():
     async with aiosqlite.connect(DB_PATH) as db:
         cur = await db.execute("SELECT chat_id, name FROM users")
-        return await cur.fetchall()
+        rows = await cur.fetchall()
+        return rows
 
 async def get_all_chat_ids():
     async with aiosqlite.connect(DB_PATH) as db:
