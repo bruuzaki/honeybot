@@ -35,7 +35,7 @@ async def send_message(application, chat_id: int, text: str):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Hola! Soy HoneyBot. Para registrarte usa /register <codigo>\n"
-        f"Ejemplo: /register {REGISTER_CODE}"
+        "Ejemplo: /register IAmAVeryStrongPassword"
     )
 
 async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
