@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  honeybot:
+    build: ..
+    container_name: honeybot
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - REGISTER_CODE=${REGISTER_CODE}
+      - ADMIN_ID=${ADMIN_ID}
+      - TZ=${TZ:-America/Montevideo}
+      - SEND_HOUR=${SEND_HOUR:-20}
+    volumes:
+      - ./data:/app/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
