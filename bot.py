@@ -101,4 +101,3 @@ async def init_bot():
 if __name__ == "__main__":
     import asyncio
     app = asyncio.run(init_bot())
-    app.run_polling()  # solo esto
