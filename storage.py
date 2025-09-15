@@ -2,7 +2,7 @@ import aiosqlite
 import asyncio
 import os
 
-DB_PATH = os.path.join(os.environ.get("DB_PATH", "/app/data/honeybot.db"))
+DB_PATH = os.path.join(os.getcwd(), "data/database.db")
 
 async def init_db():
     async with aiosqlite.connect(DB_PATH) as db:

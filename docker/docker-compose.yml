@@ -1,17 +1,14 @@
-version: "3.8"
 services:
   honeybot:
-    build: ..
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
     container_name: honeybot
     restart: unless-stopped
-    environment:
-      - BOT_TOKEN=${BOT_TOKEN}
-      - REGISTER_CODE=${REGISTER_CODE}
-      - ADMIN_ID=${ADMIN_ID}
-      - TZ=${TZ:-America/Montevideo}
-      - SEND_HOUR=${SEND_HOUR:-20}
+    env_file:
+      - ../.env
     volumes:
-      - ./data:/app/data
+      - ../storage:/app/data
     logging:
       driver: "json-file"
       options:

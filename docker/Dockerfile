@@ -1,18 +1,18 @@
+# Usamos Python slim
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV TZ=America/Montevideo
-
+# Directorio de trabajo
 WORKDIR /app
 
-COPY requirements.txt .
+# Copiamos requerimientos y los instalamos
+COPY ../requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
+# Copiamos todo el código
+COPY ../ /app
 
-# crear carpeta para BD
-RUN mkdir -p /app/data && chown -R nobody:nogroup /app/data
+# Creamos la carpeta de datos con permisos correctos
+RUN mkdir -p /app/data && chmod 777 /app/data
 
-USER nobody
+# Ejecutamos el bot
 CMD ["python", "bot.py"]
