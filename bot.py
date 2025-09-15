@@ -79,7 +79,7 @@ async def send_test(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.application.bot.send_message(chat_id=cid, text=message)
     await update.message.reply_text("Envíos de prueba realizados.")
 
-# ------------------ Main ------------------
+# ------------------ Inicialización del Bot ------------------
 async def init_bot():
     await init_db()
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -97,7 +97,13 @@ async def init_bot():
 
     return app
 
-# ------------------ Entry point ------------------
+# ------------------ Entry Point ------------------
 if __name__ == "__main__":
     import asyncio
-    app = asyncio.run(init_bot())
+
+    async def main():
+        app = await init_bot()
+        print("Bot iniciado, entrando en polling...")
+        await app.run_polling()  # Inicia el bot y el scheduler juntos
+
+    asyncio.run(main())
